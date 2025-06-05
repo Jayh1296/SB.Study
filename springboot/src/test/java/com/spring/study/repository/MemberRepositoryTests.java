@@ -1,4 +1,4 @@
-package com.spring.study;
+package com.spring.study.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
