@@ -2,15 +2,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" 
-		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
-		crossorigin="anonymous">
-</script>
-</head>
+<title>Title</title>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <body>
 	<input name="uploadFiles" type="file" multiple="multiple">
-	<button class="uploadBtn">UPLOAD</button>
+	<button class="uploadBtn">Upload</button>
+	
+	<div class="uploadResult">
+	
+	</div>
 	
 	<script type="text/javascript">
 		$(".uploadBtn").click(function() {
@@ -34,12 +34,50 @@
 				success : function(result) {
 					console.log(result);
 					
+					showUploadeImages(result);
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 					console.log(textStatus);
 				}
-			})
+			});
 		});
+		
+		function showUploadeImages(arr) {
+			console.log(arr);
+			
+			const divArea = $(".uploadResult");
+			
+			let str = "";
+			
+			for(var i = 0; i < arr.length; i++) {
+				//divArea.append("<img src='/display?fileName=" + arr[i].thumbnailURL + "'>");
+				
+				str += "<div>";
+				str += "	<img src='/display?fileName=" + arr[i].thumbnailURL + "'>";
+				str += "	<button class='removeBtn' data-name='" + arr[i].imageURL + "'>REMOVE</button>";
+				str += "</div>";
+				
+			}
+
+			divArea.append(str);
+			
+			$(".uploadResult").on("click", ".removeBtn", function(e) {
+				const target = $(this);
+				const fileName = target.data("name");
+				
+				const targetDiv = $(this).closest("div");
+				
+				console.log(fileName);
+				
+				$.post("/removeFile", {fileName : fileName}, function(result) {
+					console.log(result);
+					
+					if(result === true) {
+						targetDiv.remove();
+					}
+				});
+			});
+		}
 	</script>
 </body>
 </html>

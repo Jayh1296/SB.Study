@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+	<th:block th:fragment="content">
+		<h1 class="mt-4">Movie Read Page</h1>
+			<div class="form-group mb-2">
+				<label>Title</label>
+				<input type="text" class="form-control" name="title" th:value="${dto.title}" readonly="readonly">
+			</div>
+			<div class="form-group mb-2">
+				<label>Review Count</label>
+				<input type="text" class="form-control" name="reviewCnt" th:value="${dto.reviewCnt}" readonly="readonly">
+			</div>
+			<div class="form-group mb-2">
+				<label>Avg</label>
+				<input type="text" class="form-control" name="avg" th:value="${#numbers.formatDecimal(dto.avg, 1, 1)}" readonly="readonly">
+			</div>
+			<div class="box">
+			
+			</div>
+			<style>
+				.uploadResult {
+					width: 100%;
+					background-color: gray;
+					margin-top: 10px;
+				}
+				
+				.uploadResult ul {
+					display: flex;
+					flex-flow: row;
+					justify-content: center;
+					align-items: center;
+					vertical-align: top;
+					overflow: auto;
+				}
+				
+				.uploadResult ul li {
+					list-style: none;
+					padding: 10px;
+					margin-left: 2em;
+				}
+				
+				.uploadResult ul li img {
+					width: 100px;
+				}
+			</style>
+			
+			<div class="uploadResult">
+				<ul>
+					<li th:each="movieImage : ${dto.imageDtoList}" th:data-file="${movieImage.getThumbnailURL()}">
+						<img th:if="${movieImage.path != null}" th:src="|/display?fileName=${movieImage.getThumbnailURL()}&size=0|">
+					</li>
+				</ul>
+			</div>
+			
+			<button type="submit" class="btn btn-primary">
+				Review Count<span class="badge bg-light text-dark fw-bolder">[[${dto.reviewCnt}]]</span>
+			</button>
+			<button type="button" class="btn btn-outline-secondary addReviewBtn">
+				Review Register
+			</button>
+			
+			<!-- 리뷰 목록 표시 -->
+			<div class="list-group reviewList">
+				
+			</div>
+			
+		<div class="reviewModal modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title fs-5">Movie Review</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label class="col-form-label">Reviewer ID</label>
+							<input type="text" class="form-control" name="mid">
+						</div>
+						<div class="form-group mb-3">
+							<label class="col-form-label">Grade<span class="grade"></span></label>
+							<div class="starrr"></div>
+						</div>
+						<div class="form-group mb-3">
+							<label class="col-form-label">Review Text</label>
+							<input type="text" class="form-control" name="text" placeholder="영화평을 작성해 주세요!">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary reviewSaveBtn">Save changes</button>
+						<button type="button" class="btn btn-warning modifyBtn">Modify</button>
+						<button type="button" class="btn btn-primary removeBtn">Remove</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="imageModal modal fade" tabindex="-2" role="dialog">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title fs-5">Picture</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+					
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script th:src="@{/js/starrr.js}"></script>
+		<link th:href="@{/css/starrr.css}" rel="stylesheet"></link>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css"></link>
+		
+		<script th:inline="javascript">
+			$(document).ready(function() {
+				let grade = 3;
+				
+				const mno = /*[[${dto.mno}]]*/ "null"; /* String 아무렇게나 와도 가능 */
+				
+				$(".starrr").starrr({
+					rating : grade,
+					change : function(e, value) {
+								if(value) {
+									console.log(value);
+									grade = value;
+								}
+							}
+				});
+				
+				// $(".reviewModal").modal("show");
+				
+				const reviewModal = $(".reviewModal");
+				const inputMid = $("input[name='mid']");
+				const inputText = $("input[name='text']");
+				
+				$(".addReviewBtn").click(function() {
+					inputMid.val("");
+					inputText.val("");
+					
+					$(".removeBtn, .modifyBtn").hide();
+					$(".reviewSaveBtn").show();
+					
+					reviewModal.modal("show");
+				});
+				
+				$(".reviewSaveBtn").click(function() {
+					// 객체로 전달
+					const data = {mno:mno, grade:grade, text:inputText.val(), mid:inputMid.val()};
+					console.log("review data : " + data);
+					// restpull 방식 설계를 했기 때문에 비동기 처리
+					$.ajax({
+						url : "/reviews/" + mno,
+						type : "post",
+						data : JSON.stringify(data),		// 제이슨 타입으로 변환
+						contentType : "application/json; charset=utf-8",
+						dataType : "text",
+						success : function(result) {
+								console.log("댓글 등록 결과 : " + result);
+								
+								self.location.reload();
+						}
+					});
+					
+					reviewModal.modal("hide");
+				});
+				
+				function getMovieReviews() {
+					/* 시간 포맷 */
+					function formatTime(str) {
+						const date = new Date(str);
+						
+						return date.getFullYear() + "/" +
+									(date.getMonth() + 1) + "/" +
+									date.getDate() + " " +
+									date.getHours() + ":" +
+									date.getMinutes();
+					}
+					
+					$.getJSON("/reviews/" + mno + "/all", function(arr) {
+						let str = "";
+						
+						$.each(arr, function(idx, review) {
+							console.log("review : " + review);
+							
+							str += "<div class='card border-0'>";
+							str += "	<div class='card-body' data-reviewnum=" + review.reviewnum + " data-mid=" + review.mid + ">";
+							str += "		<h5 class='card-title fw-bolder'>" + review.text + " <span>" + "[평점:" + review.grade + "]</span></h5>";
+							str += "		<h6 class='card-subtitle mb-2 text-muted'>" + review.nickname + "</h6>";
+							str += "		<p class='card-text'>" + formatTime(review.regDate) + "</p>";
+							str += "	</div>";
+							str += "</div>";
+						});
+						
+						/* 위에 반복문을 html로 생성하여 넣어줌 */
+						$(".reviewList").html(str);
+					});
+				}
+				
+				/* 리뷰 상세 수정 삭제 */
+				getMovieReviews();
+				
+				let reviewnum;
+				
+				$(".reviewList").on("click", ".card-body", function() {
+					$(".reviewSaveBtn").hide();
+					$(".modifyBtn, .removeBtn").show();
+					
+					const targetReview = $(this);
+					console.log("targetReview : " + targetReview.html());
+					
+					reviewnum = targetReview.data("reviewnum");
+					console.log("reviewnum : " + reviewnum);
+					console.log("mid : " + targetReview.data("mid"));
+					
+					/* 댓글 작성한 Mid와 댓글 내용 text, 별점 grade 세팅 */
+					inputMid.val(targetReview.data("mid"));
+					inputText.val(targetReview.find(".card-title").clone().children().remove().end().text());
+				
+					const grade = targetReview.find(".card-title span").text().match(/\d+/)[0];						// 숫자만 꺼내오도록 match
+					
+					$(".starrr a:nth-child(" + grade + ")").trigger("click");
+					
+					$(".reviewModal").modal("show");
+				});
+				
+				$(".uploadResult li").click(function() {
+					const file = $(this).data("file");
+					
+					console.log("원본 이미지 파일 : " + file);
+					
+					$(".imageModal .modal-body").html("<img style='width:100%' src='/display?fileName=" + file + "&size=1'>");			// 원본 파일 요청
+					$(".imageModal").modal("show");
+				});
+			});
+		</script>
+		
+		<script>
+			$(document).ready(function() {
+				const regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");		// 확장자 필터링 정규식
+				const maxSize = 10485760; 
+				
+				function checkExtension(fileName, fileSize) {
+					if(fileSize >= maxSize) {
+						alert("파일 사이즈 초과");
+						
+						return false;
+					}
+					
+					if(regex.test(fileName)) {
+						alert("등록 가능한 파일이 아닙니다.");
+						
+						return false;
+					}
+					
+					return true;
+				}
+				
+				$("#fileInput").on("change", function() {
+					const fileName = $(this).val().split("\\").pop();	// split("\\").pop() : 마지막 슬래시 뒤에 있는 값을 잘라옴
+					
+					$(this).siblings("#fileInput").addClass("selected").html(fileName);		// 선택된 파일이름으로 클래스 생성
+					
+					const formData = new FormData();
+					const inputFile = $(this);
+					const files = inputFile[0].files;
+					
+					let appended = false;
+					
+					for(let i = 0; i < files.length; i++) {
+						if(!checkExtension(files[i].name, files[i].size)) {
+							return false;
+						}
+						
+						console.log(files[i]);
+						
+						formData.append("uploadFiles", files[i]);
+						
+						appended = true;
+					}
+					// 첨부 파일 추가 안하면 그냥 반환
+					if(!appended) {
+						return;
+					}
+					// JS 향상된 foreact
+					for(let value of formData.values()) {
+						console.log("value ===> " + value);
+					}
+					
+					$.ajax({
+						url : "/uploadAjax",
+						processData : false,
+						contentType : false,
+						data : formData,
+						type : "post",
+						dataType : "json",
+						success : function(result) {
+							console.log(result);
+							
+							showResult(result);
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							console.log(textStatus);
+						}
+					});
+				});
+				
+				function showResult(uploadResultArr) {
+					console.log("showResult에 전달된 uploadResultArr", uploadResultArr);
+					
+					const uploadUL = $(".uploadResult ul");
+					
+					let str = "";
+					// i : index / obj : object
+					$(uploadResultArr).each(function(i, obj) {
+						
+						str += "<li data-name='" + obj.fileName + "' data-path='" + obj.folderPath + "' data-uuid='" + obj.uuid + "'>";
+						str += "<div>";
+						str += "	<button type='button' data-file=\'" + obj.imageURL + "\' ";
+						str += "	class='btn-warning btn-sm'>X</button><br>";
+						str += "	<img src='/display?fileName=" + obj.thumbnailURL + "'>";
+						str += "</div>";
+						str += "</li>";
+						
+					});
+					
+					uploadUL.append(str);
+				}
+				
+				$(".uploadResult").on("click", "li button", function(e) {
+					console.log("delete file");
+					
+					const targetFile = $(this).data("file");
+					
+					const targetLi = $(this).closest("li")
+					
+					$.ajax({
+						url : "/removeFile",
+						data : {fileName : targetFile},
+						dataType : "text",
+						type : "post",
+						success : function(result) {
+							if(result) {
+								alert("성공적으로 처리 되었습니다.");
+								
+								targetLi.remove();
+							}
+						}
+						
+					});
+				});
+				
+				$(".btn-primary").on("click", function(e) {
+					e.preventDefault();
+					
+					let str = "";
+					
+					$(".uploadResult li").each(function(i, obj) {
+						const target = $(obj);
+						// 히든 태그 생성 (form만 가능): 이름, 경로, uuid
+						str += "<input type='hidden' name='imageDtoList[" + i + "].imgName' value='" + target.data('name') + "'>";
+						str += "<input type='hidden' name='imageDtoList[" + i + "].path' value='" + target.data('path') + "'>";
+						str += "<input type='hidden' name='imageDtoList[" + i + "].uuid' value='" + target.data('uuid') + "'>";
+					});
+					
+//					$(".box").html(str);
+					
+					$("form").append(str);
+					
+					console.log("Form data : ", $("form").serialize());
+					
+					$("form").submit();
+				});
+			});
+		</script>
+	</th:block>
+</th:block>

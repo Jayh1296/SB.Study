@@ -41,6 +41,8 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
 	// https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11
 	implementation 'com.oracle.database.jdbc:ojdbc11:21.3.0.0'
+	// https://mvnrepository.com/artifact/net.coobird/thumbnailator
+	implementation("net.coobird:thumbnailator:0.4.20")
 }
 
 tasks.named('test') {
