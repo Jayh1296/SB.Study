@@ -1,4 +1,4 @@
-package com.spring.study.sqlformatter;
+package com.spring.study.comm.sqlformatter;
 
 import java.util.Locale;
 
