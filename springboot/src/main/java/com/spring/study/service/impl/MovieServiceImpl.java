@@ -12,11 +12,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.spring.study.dto.MovieDTO;
 import com.spring.study.dto.PageRequestDTO;
 import com.spring.study.dto.PageResultDTO;
 import com.spring.study.entity.Movie;
 import com.spring.study.entity.MovieImage;
+import com.spring.study.entity.QMovie;
 import com.spring.study.repository.MovieImageRepository;
 import com.spring.study.repository.MovieRepository;
 import com.spring.study.service.IMovieService;
@@ -55,7 +58,13 @@ public class MovieServiceImpl implements IMovieService{
 	public PageResultDTO<MovieDTO, Object[]> getList(PageRequestDTO requestDTO) {
 		Pageable pageable = requestDTO.getPageable(Sort.by("mno").descending());
 		
+//		검색 조건
+//		BooleanBuilder booleanBuilder = getSearch(requestDTO);
+		
 		Page<Object[]> result = movieRepository.getListPage(pageable);
+		
+//		검색 조건을 포함한 페이지 결과로 변환
+//		Page<Object[]> result = movieRepository.findAll(booleanBuilder, pageable);
 		
 		Function<Object[], MovieDTO> fn = (arr -> entitiesToDto((Movie)arr[0],
 																(List<MovieImage>)(Arrays.asList((MovieImage)arr[1])),
@@ -64,6 +73,34 @@ public class MovieServiceImpl implements IMovieService{
 		
 		return new PageResultDTO<>(result, fn);
 	}
+
+//	private BooleanBuilder getSearch(PageRequestDTO requestDTO) {
+//		String type = requestDTO.getType();
+//		
+//		BooleanBuilder booleanBuilder = new BooleanBuilder();
+//		
+//		QMovie qMovie = QMovie.movie;
+//		
+//		String keyword = requestDTO.getKeyword();
+//		
+////		gt : mno 값이 0보다 커야 생성
+//		BooleanExpression expression = qMovie.mno.gt(0L);
+//		
+//		booleanBuilder.and(expression);
+////		검색 조건이 존재하지 않을 경우
+//		if (type == null || type.trim().length() == 0) {
+//			return booleanBuilder;
+//		}
+//		
+////		검색 조건이 있을 경우
+//		BooleanBuilder conditionBuilder = new BooleanBuilder();
+////		다이나믹 쿼리 사용 (영화 제목에 키워드와 비슷한 값들을 찾아옴)
+//		if (type.contains("t")) {
+//			conditionBuilder.or(qMovie.title.contains(keyword));
+//		}
+//		
+//		return null;
+//	}
 
 	@Override
 	public MovieDTO getMovie(Long mno) {

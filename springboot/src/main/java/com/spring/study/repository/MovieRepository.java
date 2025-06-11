@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.spring.study.entity.Movie;
-
-public interface MovieRepository extends JpaRepository<Movie, Long>{
+import com.spring.study.search.SearchMovieRepository;
+// 인터페이스 형태로 다중 상속 받을 수 있게함
+public interface MovieRepository extends JpaRepository<Movie, Long>, SearchMovieRepository{
 //	영화 리스트 페이징 + 이미지 + 평점 평균 + 리뷰 수
 //	쿼리문이지만 컬럼, 테이블이 아닌 ENTITY
 	@Query("SELECT m, mi, "

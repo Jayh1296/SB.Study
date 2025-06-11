@@ -74,6 +74,11 @@ class MovieRepositoryTests {
 //		}
 //		
 //	}
+	
+	@Test
+	public void testSearch1() {
+		movieRepository.search1();
+	}
 
 
 }
