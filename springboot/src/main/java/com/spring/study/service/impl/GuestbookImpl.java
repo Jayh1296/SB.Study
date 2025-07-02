@@ -20,7 +20,7 @@ import com.spring.study.service.IGuestbookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@Service("IGuestbookService")
 @Log4j2
 @RequiredArgsConstructor
 public class GuestbookImpl implements IGuestbookService{

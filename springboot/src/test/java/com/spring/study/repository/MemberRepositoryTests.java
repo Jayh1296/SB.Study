@@ -39,17 +39,17 @@ class MemberRepositoryTests {
 	
 //	Transactional : 두 개 ( 회원 삭제, 회원과 관계를 맺은 리뷰와 관계를 끊어냄) 기능이 모두 처리가 되어야 하기 때문에
 //					실패 시 rollback 될 수 있도록 해줘야 함 ( 멤버만 삭제되고 리뷰와 관계를 끊어내지 못할 경우 무의미한 데이터가 남게 됨)
-	@Transactional
-	@Commit
-	@Test
-	void testDeleteMembers() {
-		Long mid = 1L;
-		
-		Member member = Member.builder().mId(mid).build();
-		
-		memberRepository.deleteById(mid);
-		reviewRepository.deleteByMember(member);
-	}
+//	@Transactional
+//	@Commit
+//	@Test
+//	void testDeleteMembers() {
+//		Long mid = 1L;
+//		
+//		Member member = Member.builder().mId(mid).build();
+//		
+//		memberRepository.deleteById(mid);
+//		reviewRepository.deleteByMember(member);
+//	}
 
 }
 

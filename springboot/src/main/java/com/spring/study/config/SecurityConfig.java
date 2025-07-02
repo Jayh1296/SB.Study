@@ -25,7 +25,7 @@ public class SecurityConfig {
 //	@Bean
 //	SecurityFilterChain filter(HttpSecurity http) throws Exception {
 ////		모든 페이지에 로그인 하지 않아도 접근하도록 허용
-//		http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+//		http.authorizeHttpRequestsa((authorizeHttpRequests) -> authorizeHttpRequests
 //															  .requestMatchers(new AntPathRequestMatcher("/**")).permitAll());
 //		
 //		return http.build();
@@ -39,23 +39,23 @@ public class SecurityConfig {
 	}
 	
 //	하드코딩으로 로그인 할 수 있도록 예제
-	@Bean
-	UserDetailsService userDetailsService() {
-		UserDetails user = User.builder().username("user1")
-										 .password(passwordEncoder().encode("1111"))
-										 .roles("USER")
-										 .build();
-		
-		return new InMemoryUserDetailsManager(user);
-	}
+//	@Bean
+//	UserDetailsService userDetailsService() {
+//		UserDetails user = User.builder().username("user1")
+//										 .password(passwordEncoder().encode("1111"))
+//										 .roles("USER")
+//										 .build();
+//		
+//		return new InMemoryUserDetailsManager(user);
+//	}
 	
 //	URL로 진입 가능한 특정 경로 설정
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.authorizeHttpRequests((requests) -> requests.requestMatchers("/movie/list", "/member/login").permitAll()
+		http.authorizeHttpRequests((requests) -> requests.requestMatchers("/movie/list", "/member/login", "/member/join").permitAll()
 														 .requestMatchers("/css/**", "/jquery/**", "/js/**", "/upload/**", "/display/**").permitAll()  // 정적 파일들 허용
 														 .anyRequest().authenticated())
-			.formLogin((form) -> form.loginPage("/member/login").permitAll())
+			.formLogin((form) -> form.loginPage("/member/login").usernameParameter("email").permitAll())
 			.csrf(csrf -> csrf.disable())
 			.logout(logout -> logout.permitAll());
 		

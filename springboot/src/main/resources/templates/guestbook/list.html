@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+<th:block th:replace="~{layout/basic :: setContent(~{::content})}">
 	<th:block th:fragment="content">
 		<h1>GuestBook List Page</h1>
 			<span>
@@ -95,14 +95,16 @@
 				myModal.show();
 			}
 			
-			const searchFom = $("#searchForm");
+			const searchForm = $("#searchForm");
 			
 			$(".btn-search").click(function() {
 				searchForm.submit();
 			});
 			
 			$(".btn-clear").click(function() {
-				searchForm.empty().submit();
+				searchForm.find("input[name='keyword']").val("");  // 키워드 입력칸 초기화
+				searchForm.find("select[name='type']").val("");    // 드롭다운 초기화
+				searchForm.submit();
 			});
 		</script>
 	</th:block>

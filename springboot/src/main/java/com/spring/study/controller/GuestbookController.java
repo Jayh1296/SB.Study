@@ -37,9 +37,11 @@ public class GuestbookController {
 	
 	@GetMapping("/list")
 	public void list(PageRequestDTO pageRequestDTO, Model model) {
-		
-		log.info("여기야!!!! 여긴 리스트야!!!" + pageRequestDTO);
-		model.addAttribute("result", service.getList(pageRequestDTO));
-		
+	    log.info("🔥🔥 [GuestbookController] list() 호출 - pageRequestDTO = {}", pageRequestDTO);
+
+	    var result = service.getList(pageRequestDTO);
+	    log.info("📦 [GuestbookController] service.getList() 결과 = {}", result);
+
+	    model.addAttribute("result", result);
 	}
 }
