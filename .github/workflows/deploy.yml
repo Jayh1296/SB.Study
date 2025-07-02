@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Make deploy.sh executable
-        run: chmod +x ./scripts/deploy.sh
+        run: chmod +x ./springboot/scripts/deploy.sh
 
       - name: Save SSH private key
         run: |
@@ -32,4 +32,4 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           SSH_KEY_PATH: private_key
-        run: ./scripts/deploy.sh
+        run: ./springboot/scripts/deploy.sh
