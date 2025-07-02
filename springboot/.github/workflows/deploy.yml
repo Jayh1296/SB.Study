@@ -31,4 +31,5 @@ jobs:
         env:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          SSH_KEY_PATH: private_key
         run: ./scripts/deploy.sh
