@@ -4,7 +4,7 @@ BUILD_PATH=build/libs/$APP_NAME					# JAR 생 경로
 REMOTE_USER=root						# VM 사용자명
 REMOTE_HOST=192.168.0.34					# VM IP
 REMOTE_PATH=/root						# VM PATH
-SSH_KEY_PATH=~/.ssh/id_rsa					# 개인 키 
+SSH_KEY_PATH=private_key					# 개인 키 
 
 # 빌드
 echo "Building project..."
