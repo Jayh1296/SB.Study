@@ -21,7 +21,7 @@ jobs:
 
     - name: Make gradlew & deploy.sh executable
       run: |
-        chmod +x ./gradlew
+        chmod +x ./springboot/gradlew
         chmod +x ./springboot/scripts/deploy.sh
 
     - name: Save SSH private key
