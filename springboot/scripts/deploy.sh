@@ -14,11 +14,10 @@ chmod +x ./gradlew
 
 # 빌드
 echo "🔨 Building project..."
-cd springboot
 ./gradlew clean build -x test
 
 # 빌드된 JAR 경로
-BUILD_PATH=springboot/build/libs/$APP_NAME
+BUILD_PATH=build/libs/$APP_NAME
 
 # JAR 복사
 echo "Copying JAR to remote server..."
