@@ -7,7 +7,7 @@ REMOTE_PATH=/root							# VM PATH
 SSH_KEY_PATH=private_key					# 개인 키 
 
 # 스크립트 기준 경로로 이동 (최상위 디렉토리 기준)
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../springboot"
 
 # gradlew 실행 권한 부여
 chmod +x ./springboot/gradlew

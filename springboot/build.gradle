@@ -79,6 +79,6 @@ sourceSets {
 def commitHash = 'git rev-parse --short HEAD'.execute().text.trim()
 processResources {
     filesMatching('**/application.properties') {
-        expand(appVersion: "commit-${commitHash}")
+        expand(['appVersion': "commit-${commitHash}"])
     }
 }

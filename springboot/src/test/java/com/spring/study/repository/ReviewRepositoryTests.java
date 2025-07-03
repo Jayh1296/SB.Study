@@ -1,18 +1,13 @@
 package com.spring.study.repository;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.util.List;
-import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.spring.study.entity.Member;
 import com.spring.study.entity.Movie;
 import com.spring.study.entity.Review;
-import com.spring.study.repository.ReviewRepository;
 
 import lombok.extern.log4j.Log4j2;
 
