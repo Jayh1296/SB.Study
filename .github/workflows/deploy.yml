@@ -19,9 +19,9 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Make deploy.sh executable
+    - name: Make gradlew & deploy.sh executable
       run: |
-        chmod +x ./springboot/gradlew
+        chmod +x ./gradlew
         chmod +x ./springboot/scripts/deploy.sh
 
     - name: Save SSH private key
