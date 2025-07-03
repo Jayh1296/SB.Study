@@ -33,5 +33,5 @@ jobs:
       env:
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        SSH_KEY_PATH: private_key
+        SSH_KEY_PATH: ${{ secrets.SSH_KEY_PATH }}
       run: ./springboot/scripts/deploy.sh
