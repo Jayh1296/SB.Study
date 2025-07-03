@@ -7,7 +7,7 @@ REMOTE_PATH=/root							# VM PATH
 SSH_KEY_PATH=private_key					# 개인 키 
 
 # 빌드
-echo "Building project..."
+cd "$(dirname "$0")/.."
 ./gradlew clean build
 
 
