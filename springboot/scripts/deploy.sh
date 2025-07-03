@@ -7,28 +7,28 @@ REMOTE_PATH=/root							# VM PATH
 SSH_KEY_PATH=private_key					# 개인 키 
 
 # 스크립트 기준 경로로 이동 (최상위 디렉토리 기준)
-cd "$(dirname "$0")/../springboot"
+cd "$(dirname "$0")/.."
 
 # gradlew 실행 권한 부여
-chmod +x ./springboot/gradlew
+chmod +x ./gradlew
 
 # 빌드
 echo "🔨 Building project..."
 cd springboot
-./gradlew clean build
+./gradlew clean build -x test
 
 # 빌드된 JAR 경로
-BUILD_PATH=build/libs/$APP_NAME
+BUILD_PATH=springboot/build/libs/$APP_NAME
 
 # JAR 복사
 echo "Copying JAR to remote server..."
-scp -i "../$SSH_KEY_PATH" "$BUILD_PATH" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+scp -i "$SSH_KEY_PATH" "$BUILD_PATH" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
 
 # 서버 실행
 echo "Restarting JAR on remote server..."
-ssh -i "../$SSH_KEY_PATH" "$REMOTE_USER@$REMOTE_HOST" << EOF
-  pkill -f springboot-0.0.1-SNAPSHOT.jar || true
-  nohup java -jar /root/springboot-0.0.1-SNAPSHOT.jar > /root/nohup.out 2>&1 &
+ssh -i "$SSH_KEY_PATH" "$REMOTE_USER@$REMOTE_HOST" << EOF
+  pkill -f $APP_NAME || true
+  nohup java -jar $REMOTE_PATH/$APP_NAME > $REMOTE_PATH/nohup.out 2>&1 &
 EOF
 
 echo "✅ 배포 완료!"
