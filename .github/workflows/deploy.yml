@@ -9,7 +9,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -17,20 +16,22 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-            java-version: '21'
-            distribution: 'temurin'
+        java-version: '21'
+        distribution: 'temurin'
 
     - name: Make deploy.sh executable
-      run: chmod +x ./springboot/scripts/deploy.sh
+      run: |
+        chmod +x ./springboot/gradlew
+        chmod +x ./springboot/scripts/deploy.sh
 
     - name: Save SSH private key
       run: | 
-            echo "$SSH_PRIVATE_KEY" > private_key
-            chmod 600 private_key
+        echo "$SSH_PRIVATE_KEY" > private_key
+        chmod 600 private_key
 
     - name: Run deploy script
       env:
-            REMOTE_USER: ${{ secrets.REMOTE_USER }}
-            REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-            SSH_KEY_PATH: private_key
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        SSH_KEY_PATH: private_key
       run: ./springboot/scripts/deploy.sh
